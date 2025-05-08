@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunar Muse - Fun Chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: radial-gradient(circle, #1a1a3d, #000);
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .journal-container {
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #fff;
+    }
+    textarea {
+      width: 100%;
+      max-width: 400px;
+      height: 100px;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      resize: none;
+      font-size: 1em;
+      margin-bottom: 10px;
+    }
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 10px #6e85ff;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #6e85ff;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #6e85ff;
+    }
+    .entry {
+      position: absolute;
+      color: #fff;
+      font-size: 0.9em;
+      text-shadow: 0 0 5px #fff;
+      pointer-events: none;
+      animation: float 10s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="journal-container">
+    <h1>Lunar Muse - Fun Chat</h1>
+    <textarea id="journalInput" placeholder="Write your thoughts..."></textarea>
+    <button onclick="addEntry()">Add to Cosmos</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const stars = [];
+    class Star {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speed = Math.random() * 0.05;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fill();
+      }
+      update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) this.y = 0;
+        this.draw();
+      }
+    }
+
+    for (let i = 0; i < 100; i++) {
+      stars.push(new Star());
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => star.update());
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    function addEntry() {
+      const input = document.getElementById('journalInput');
+      const text = input.value.trim();
+      if (text) {
+        const entry = {
+          text: text,
+          x: Math.random() * (window.innerWidth - 200),
+          y: Math.random() * (window.innerHeight - 100)
+        };
+        
+        // Save to localStorage
+        let entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+        entries.push(entry);
+        localStorage.setItem('journalEntries', JSON.stringify(entries));
+
+        // Display the entry
+        displayEntry(entry);
+        input.value = '';
+      }
+    }
+
+    function displayEntry(entry) {
+      const entryDiv = document.createElement('div');
+      entryDiv.className = 'entry';
+      entryDiv.textContent = entry.text;
+      entryDiv.style.left = `${entry.x}px`;
+      entryDiv.style.top = `${entry.y}px`;
+      document.body.appendChild(entryDiv);
+      setTimeout(() => entryDiv.remove(), 10000);
+    }
+
+    // Load entries from localStorage on page load
+    function loadEntries() {
+      const entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+      entries.forEach(entry => displayEntry(entry));
+    }
+
+    // Call loadEntries when the page loads
+    window.addEventListener('load', loadEntries);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
