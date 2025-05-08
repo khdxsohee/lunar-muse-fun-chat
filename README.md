@@ -1,7 +1,7 @@
 ## 🌙 Lunar Muse Fun Chat App
 ✨ Lunar Muse is a cosmic journaling web app that lets you pen your thoughts against a mesmerizing starry backdrop. Your entries float as ethereal notes in a celestial canvas, with a modern and immersive design. Built with HTML, CSS, and JavaScript, it uses localStorage to persist your musings even after a page reload. Perfect for dreamers and coders alike! 🚀
 ## Live Demo
-⚡ You can try the [🛰️ Live Demo](https://freewifiqrcode.web.app/lunar-muse/index.html) — no installation needed!
+⚡ You can try the [🛰️ Live Demo](https://khalid-randhawa.web.app/lunar-muse/index.html) — no installation needed!
 
 ## 🌟 Features
 
